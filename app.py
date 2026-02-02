@@ -22,7 +22,7 @@ def get_db():
         database=os.getenv("MYSQL_DB"),
         cursorclass=pymysql.cursors.DictCursor,
         autocommit=True,
-        ssl={"ssl": {}}   # REQUIRED for Aiven / cloud MySQL
+        ssl={"ssl": {}}  # REQUIRED for Aiven / cloud MySQL
     )
 
 # ================= MAIL CONFIG =================
@@ -53,7 +53,8 @@ def home():
     cur.execute(
         "SELECT COUNT(*) AS total FROM teams WHERE transaction_id IS NOT NULL"
     )
-    total_registrations = cur.fetchone()['total']
+    result = cur.fetchone()
+    total_registrations = result['total'] if result else 0
 
     cur.close()
     conn.close()
@@ -67,9 +68,9 @@ def home():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        name = request.form['name']
-        email = request.form['email']
-        password = request.form['password']
+        name = request.form['name'].strip()
+        email = request.form['email'].strip()
+        password = request.form['password'].strip()
 
         try:
             conn = get_db()
@@ -102,7 +103,6 @@ NEXOVATE'26 Team
 
         except pymysql.err.IntegrityError:
             flash("Email already registered", "danger")
-            return redirect('/register')
 
         finally:
             cur.close()
@@ -114,8 +114,8 @@ NEXOVATE'26 Team
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        email = request.form['email'].strip()
+        password = request.form['password'].strip()
 
         conn = get_db()
         cur = conn.cursor()
@@ -203,7 +203,6 @@ def team():
             if not team_name:
                 flash("Team name required", "danger")
                 return redirect('/team')
-
         else:
             flash("Select a valid registration option", "danger")
             return redirect('/team')
@@ -212,7 +211,7 @@ def team():
             flash("Duplicate member names not allowed", "danger")
             return redirect('/team')
 
-        team_id = "NX" + str(uuid.uuid4())[:6].upper()
+        team_id = "NX" + uuid.uuid4().hex[:6].upper()
 
         try:
             conn = get_db()
@@ -243,7 +242,6 @@ def team():
 
         except pymysql.err.IntegrityError:
             flash("Phone or email already used", "danger")
-            return redirect('/team')
 
         finally:
             cur.close()
@@ -255,12 +253,11 @@ def team():
 @app.route('/payment/<team_id>', methods=['GET', 'POST'])
 def payment(team_id):
     if request.method == 'POST':
-        txn = request.form['transaction_id']
+        txn = request.form['transaction_id'].strip()
+        amount = session.get('amount_paid', 0)
 
         conn = get_db()
         cur = conn.cursor()
-
-        amount = session.get('amount_paid', 0)
 
         cur.execute(
             """
@@ -406,18 +403,20 @@ def approve(team_id):
         "SELECT leader_email FROM teams WHERE team_id=%s",
         (team_id,)
     )
-    email = cur.fetchone()['leader_email']
+    row = cur.fetchone()
+    email = row['leader_email'] if row else None
 
     cur.execute(
         "UPDATE teams SET payment_status='APPROVED' WHERE team_id=%s",
         (team_id,)
     )
 
-    msg = Message(
-        "NEXOVATE'26 Payment Approved",
-        recipients=[email]
-    )
-    msg.body = f"""
+    if email:
+        msg = Message(
+            "NEXOVATE'26 Payment Approved",
+            recipients=[email]
+        )
+        msg.body = f"""
 Payment approved!
 
 Your Team ID: {team_id}
@@ -425,7 +424,7 @@ Your Team ID: {team_id}
 Regards,
 NEXOVATE'26 Team
 """
-    send_async_mail(msg)
+        send_async_mail(msg)
 
     cur.close()
     conn.close()
@@ -462,4 +461,4 @@ def logout():
 
 # ================= RUN =================
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0", port=8080)
