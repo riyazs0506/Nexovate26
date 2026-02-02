@@ -1,4 +1,5 @@
-Flask
-Flask-Mail
-PyMySQL
+flask
 gunicorn
+pymysql
+python-dotenv
+flask-mail
