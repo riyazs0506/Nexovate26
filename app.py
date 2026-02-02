@@ -5,31 +5,32 @@ from flask import (
 from flask_mail import Mail, Message
 import pymysql
 import uuid
-import config
+import os
 
 app = Flask(__name__)
-app.secret_key = config.SECRET_KEY
+
+# ================= SECRET KEY =================
+app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
 
 # ================= DATABASE CONNECTION =================
 def get_db():
     return pymysql.connect(
-        host=config.MYSQL_HOST,
-        user=config.MYSQL_USER,
-        password=config.MYSQL_PASSWORD,
-        database=config.MYSQL_DB,
+        host=os.getenv("MYSQL_HOST"),
+        user=os.getenv("MYSQL_USER"),
+        password=os.getenv("MYSQL_PASSWORD"),
+        database=os.getenv("MYSQL_DB"),
         cursorclass=pymysql.cursors.DictCursor,
         autocommit=True
     )
 
 # ================= MAIL CONFIG =================
-# ================= MAIL CONFIG =================
 app.config.update(
-    MAIL_SERVER=config.MAIL_SERVER,
-    MAIL_PORT=config.MAIL_PORT,
-    MAIL_USE_TLS=config.MAIL_USE_TLS,
-    MAIL_USERNAME=config.MAIL_USERNAME,
-    MAIL_PASSWORD=config.MAIL_PASSWORD,
-    MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER
+    MAIL_SERVER=os.getenv("MAIL_SERVER"),
+    MAIL_PORT=int(os.getenv("MAIL_PORT", 587)),
+    MAIL_USE_TLS=os.getenv("MAIL_USE_TLS", "true").lower() == "true",
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
+    MAIL_DEFAULT_SENDER=os.getenv("MAIL_DEFAULT_SENDER")
 )
 
 mail = Mail(app)
@@ -40,6 +41,7 @@ def send_async_mail(msg):
         mail.send(msg)
     except Exception as e:
         print("Mail error:", e)
+
 
 
 # ================= HOME =================
