@@ -16,11 +16,13 @@ app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
 def get_db():
     return pymysql.connect(
         host=os.getenv("MYSQL_HOST"),
+        port=int(os.getenv("MYSQL_PORT", 3306)),
         user=os.getenv("MYSQL_USER"),
         password=os.getenv("MYSQL_PASSWORD"),
         database=os.getenv("MYSQL_DB"),
         cursorclass=pymysql.cursors.DictCursor,
-        autocommit=True
+        autocommit=True,
+        ssl={"ssl": {}}   # REQUIRED for Aiven / cloud MySQL
     )
 
 # ================= MAIL CONFIG =================
@@ -41,8 +43,6 @@ def send_async_mail(msg):
         mail.send(msg)
     except Exception as e:
         print("Mail error:", e)
-
-
 
 # ================= HOME =================
 @app.route('/')
@@ -96,7 +96,6 @@ Regards,
 NEXOVATE'26 Team
 """
             send_async_mail(msg)
-
 
             flash("Registration successful! Check your email.", "success")
             return redirect('/login')
@@ -187,12 +186,10 @@ def team():
             for n, p, e in zip(names, phones, emails)
             if n and p and e
         ]
-        # ===== AMOUNT CALCULATION =====
+
         amount_paid = len(members) * 250
         session['amount_paid'] = amount_paid
 
-
-        # ===== RULES =====
         if reg_type == "workshop":
             if len(members) != 1:
                 flash("Workshop allows exactly 1 participant", "danger")
@@ -230,20 +227,17 @@ def team():
                 (team_id, team_name, session['user'], reg_type)
             )
 
-            for m in members:
-                for index, m in enumerate(members, start=1):
-                    student_id = f"{team_id}-{index:02d}"
+            for index, m in enumerate(members, start=1):
+                student_id = f"{team_id}-{index:02d}"
 
-                    cur.execute(
-                        """
-                        INSERT INTO members
-                        (team_id, student_id, member_name, phone, college_email)
-                        VALUES (%s, %s, %s, %s, %s)
-                        """,
-                        (team_id, student_id, m[0], m[1], m[2])
-                    )
-
-
+                cur.execute(
+                    """
+                    INSERT INTO members
+                    (team_id, student_id, member_name, phone, college_email)
+                    VALUES (%s, %s, %s, %s, %s)
+                    """,
+                    (team_id, student_id, m[0], m[1], m[2])
+                )
 
             return redirect(f'/payment/{team_id}')
 
@@ -278,7 +272,6 @@ def payment(team_id):
             """,
             (txn, amount, team_id)
         )
-
 
         cur.close()
         conn.close()
@@ -433,7 +426,6 @@ Regards,
 NEXOVATE'26 Team
 """
     send_async_mail(msg)
-
 
     cur.close()
     conn.close()
