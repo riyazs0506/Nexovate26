@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card bg-dark border-warning p-4">
+  <h3 class="text-warning text-center mb-3">Edit Team</h3>
+
+  <form method="POST">
+    {% for m in members %}
+    <div class="border border-warning rounded p-3 mb-3">
+      <input class="form-control mb-2" name="member_name[]" value="{{ m[1] }}" required>
+      <input class="form-control mb-2" name="phone[]" value="{{ m[2] }}" required>
+      <input class="form-control" name="college_email[]" value="{{ m[3] }}" required>
+    </div>
+    {% endfor %}
+
+    <button class="btn btn-warning w-100">
+      Update Team
+    </button>
+  </form>
+</div>
+
+{% endblock %}

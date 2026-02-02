@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class="mb-4 text-center">
+  <h1 class="display-5 fw-bold text-warning">{{ event.title }}</h1>
+  <span class="badge bg-warning text-dark mb-2">
+    {{ event.type }}
+  </span>
+</section>
+
+<div class="card bg-dark border-warning p-4 mb-4">
+  <h4 class="text-warning">Event Description</h4>
+  <p class="text-light">{{ event.description }}</p>
+</div>
+
+<div class="card bg-dark border-warning p-4 mb-4">
+  <h4 class="text-warning">Rules & Regulations</h4>
+  <ul class="text-light">
+    {% for rule in event.rules %}
+      <li>{{ rule }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="text-center">
+  <a href="/register" class="btn btn-warning btn-lg me-2">
+    Register
+  </a>
+  <a href="/" class="btn btn-outline-warning btn-lg">
+    Back to Events
+  </a>
+</div>
+
+{% endblock %}

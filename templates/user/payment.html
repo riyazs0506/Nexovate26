@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card bg-dark border-warning p-4 text-center">
+
+  <h3 class="text-warning mb-3">Payment</h3>
+
+  <div class="border border-warning rounded p-3 mb-4">
+    <h6 class="text-warning">Amount to Pay</h6>
+    <h2 class="fw-bold text-success">
+      ₹ {{ session.get('amount_paid', 0) }}
+    </h2>
+    <small class="text-light">
+      ₹250 per participant
+    </small>
+  </div>
+
+  <img src="{{ url_for('static', filename='images/payment_qr.png') }}"
+       class="img-fluid my-3"
+       style="max-width:220px">
+
+  <form method="POST" oninput="validateTxn()">
+
+    <input class="form-control text-center"
+           id="txnInput"
+           name="transaction_id"
+           placeholder="Transaction ID"
+           required>
+
+    <small id="txnError" class="text-danger d-none">
+      Invalid Transaction ID
+    </small>
+
+    <button id="submitBtn"
+            class="btn btn-warning w-100 mt-3"
+            disabled>
+      Submit Payment
+    </button>
+
+  </form>
+</div>
+
+<script>
+function validateTxn() {
+  const txn = document.getElementById("txnInput").value.trim();
+  const btn = document.getElementById("submitBtn");
+  const err = document.getElementById("txnError");
+
+  const regex = /^[A-Za-z0-9_.-]{6,30}$/;
+
+  if (regex.test(txn)) {
+    btn.disabled = false;
+    err.classList.add("d-none");
+  } else {
+    btn.disabled = true;
+    err.classList.remove("d-none");
+  }
+}
+</script>
+
+{% endblock %}

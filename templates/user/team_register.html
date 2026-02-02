@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card bg-dark border-warning p-4">
+
+  <h3 class="text-warning text-center mb-4">
+    Team / Workshop Registration
+  </h3>
+
+  <form method="POST" id="teamForm">
+
+    <!-- ================= REGISTRATION TYPE ================= -->
+    <label class="text-warning fw-bold mb-2">Select Registration Type</label>
+
+    <select class="form-control mb-3" name="reg_type" id="regType" required>
+      <option value="" disabled selected>-- Select Option --</option>
+      <option value="workshop">Workshop Only</option>
+      <option value="workshop_technical">Workshop + Technical Event</option>
+      <option value="technical_nontechnical">Technical + Non-Technical Events</option>
+    </select>
+
+    <!-- ================= TEAM NAME ================= -->
+    <input class="form-control mb-3"
+           name="team_name"
+           id="teamName"
+           placeholder="Team Name (Required for team events)">
+
+    <!-- ================= MEMBER BLOCKS ================= -->
+    {% for i in range(1,4) %}
+    <div class="border border-warning rounded p-3 mb-3 member-block">
+      <h6 class="text-warning mb-2">Member {{ i }}</h6>
+      <input class="form-control mb-2 member-name"
+             name="member_name[]"
+             placeholder="Full Name">
+      <input class="form-control mb-2 member-phone"
+             name="phone[]"
+             placeholder="Phone Number">
+      <input class="form-control member-email"
+             name="college_email[]"
+             placeholder="College Email">
+    </div>
+    {% endfor %}
+
+    <!-- ================= FEE DISPLAY ================= -->
+    <div class="border border-warning rounded p-3 mb-4 text-center">
+      <h6 class="text-warning mb-2">Registration Fee</h6>
+      <h4 class="fw-bold text-success">
+        ₹ <span id="totalAmount">0</span>
+      </h4>
+      <small class="text-light">
+        ₹250 per participant
+      </small>
+    </div>
+
+    <button type="submit" class="btn btn-warning w-100 py-2">
+      Proceed to Payment
+    </button>
+
+  </form>
+</div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+const regType = document.getElementById("regType");
+const teamName = document.getElementById("teamName");
+const memberBlocks = document.querySelectorAll(".member-block");
+const totalAmount = document.getElementById("totalAmount");
+
+function disableBlock(block) {
+  block.style.opacity = "0.4";
+  block.querySelectorAll("input").forEach(inp => {
+    inp.value = "";
+    inp.readOnly = true;
+    inp.required = false;
+  });
+}
+
+function enableBlock(block, required=false) {
+  block.style.opacity = "1";
+  block.querySelectorAll("input").forEach(inp => {
+    inp.readOnly = false;
+    inp.required = required;
+  });
+}
+
+function calculateFee() {
+  let count = 0;
+  memberBlocks.forEach(b => {
+    const name = b.querySelector(".member-name").value.trim();
+    const phone = b.querySelector(".member-phone").value.trim();
+    const email = b.querySelector(".member-email").value.trim();
+    if (name && phone && email) count++;
+  });
+  totalAmount.innerText = count * 250;
+}
+
+regType.addEventListener("change", () => {
+
+  memberBlocks.forEach(b => enableBlock(b));
+  teamName.readOnly = false;
+  teamName.required = false;
+
+  if (regType.value === "workshop") {
+    teamName.value = "";
+    teamName.readOnly = true;
+
+    enableBlock(memberBlocks[0], true);
+    disableBlock(memberBlocks[1]);
+    disableBlock(memberBlocks[2]);
+  } else {
+    teamName.required = true;
+    enableBlock(memberBlocks[0], true);
+    enableBlock(memberBlocks[1], true);
+    enableBlock(memberBlocks[2], false);
+  }
+
+  calculateFee();
+});
+
+document.querySelectorAll("input").forEach(inp => {
+  inp.addEventListener("input", calculateFee);
+});
+</script>
+
+{% endblock %}

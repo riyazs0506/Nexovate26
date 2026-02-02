@@ -1,0 +1,261 @@
+/* ================= ROOT THEME ================= */
+:root {
+  --gold: #d4af37;
+  --gold-soft: rgba(212, 175, 55, 0.45);
+  --black: #0b0b0b;
+  --black-soft: #121212;
+  --cream: #f3e6c8;
+  --text-muted: #c9c9c9;
+}
+
+/* ================= GLOBAL BACKGROUND ================= */
+body {
+  background:
+    linear-gradient(
+      rgba(0,0,0,0.82),
+      rgba(0,0,0,0.92)
+    ),
+    url("../images/mankatha_bg.jpg") center / cover no-repeat fixed;
+
+  color: var(--cream);
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+}
+
+/* Mobile performance fix */
+@media (max-width: 768px) {
+  body {
+    background-attachment: scroll;
+  }
+}
+
+/* ================= NAVBAR ================= */
+.navbar {
+  background: rgba(11,11,11,0.9) !important;
+  backdrop-filter: blur(6px);
+}
+
+.navbar-brand {
+  letter-spacing: 1px;
+}
+
+/* Logo glow */
+.navbar img {
+  filter: drop-shadow(0 0 6px var(--gold-soft));
+}
+
+/* ================= HERO TEXT IMAGE ================= */
+.hero-text-img {
+  max-width: 420px;
+  filter: drop-shadow(0 0 14px rgba(212,175,55,0.7));
+}
+
+@media (max-width: 768px) {
+  .hero-text-img {
+    max-width: 280px;
+  }
+}
+
+/* ================= HERO CONTAINER ================= */
+.hero-glow {
+  box-shadow: inset 0 0 45px rgba(212,175,55,0.15);
+  border-radius: 18px;
+}
+
+/* ================= CARDS ================= */
+.card {
+  background: linear-gradient(180deg, #0f0f0f, #050505);
+  border-radius: 14px;
+  border: 1px solid var(--gold);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 30px rgba(212,175,55,0.45);
+}
+
+/* ================= HEADINGS ================= */
+h1, h2, h3, h4, h5 {
+  letter-spacing: 0.6px;
+}
+
+.text-warning {
+  color: var(--gold) !important;
+}
+
+/* ================= BADGES ================= */
+.badge {
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* ================= BUTTONS ================= */
+.btn-warning {
+  background: linear-gradient(180deg, #e6c865, var(--gold));
+  border: none;
+  color: #000;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+  background: linear-gradient(180deg, #f0d979, #c8a92e);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(212,175,55,0.45);
+}
+
+.btn-outline-warning {
+  border: 1px solid var(--gold);
+  color: var(--gold);
+}
+
+.btn-outline-warning:hover {
+  background-color: var(--gold);
+  color: #000;
+}
+
+/* ================= FORMS ================= */
+.form-control {
+  background-color: transparent;
+  color: var(--cream);
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.form-control::placeholder {
+  color: var(--text-muted);
+}
+
+.form-control:focus {
+  background-color: transparent;
+  color: var(--cream);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(212,175,55,0.25);
+}
+
+/* ================= ACCORDION ================= */
+.accordion-item {
+  background-color: transparent;
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.accordion-button {
+  background: linear-gradient(180deg, #0f0f0f, #090909);
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.accordion-button:not(.collapsed) {
+  background: linear-gradient(180deg, #151515, #0d0d0d);
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+}
+
+.accordion-body {
+  background-color: var(--black-soft);
+  color: var(--cream);
+}
+
+/* ================= TABLES ================= */
+.table-dark {
+  --bs-table-bg: #050505;
+  --bs-table-border-color: var(--gold);
+}
+
+/* ================= ALERT ================= */
+.alert {
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+/* ================= FOOTER ================= */
+footer {
+  background: rgba(11,11,11,0.92);
+  letter-spacing: 0.4px;
+}
+
+/* ================= FLIP COUNTDOWN ================= */
+.flip-box {
+  background: #000;
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  width: 90px;
+  padding: 12px 6px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(212,175,55,0.25);
+}
+
+.flip-number {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #00ff99;
+  animation: flip 0.6s ease-in-out;
+}
+
+.flip-label {
+  font-size: 0.75rem;
+  color: #f3e6c8;
+}
+
+@keyframes flip {
+  0% { transform: rotateX(90deg); opacity: 0; }
+  100% { transform: rotateX(0deg); opacity: 1; }
+}
+
+/* ================= INPUT VISIBILITY FIX ================= */
+
+/* Disabled inputs visibility fix */
+.form-control:disabled,
+.form-control[readonly] {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  color: #bfbfbf !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+  border-color: rgba(212,175,55,0.4);
+}
+
+/* Active inputs clearer contrast */
+.form-control {
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+/* Member block disabled look */
+.member-block.disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ================= SELECT / OPTION VISIBILITY FIX ================= */
+
+/* Select dropdown */
+select.form-control {
+  background-color: rgba(0, 0, 0, 0.65) !important;
+  color: var(--cream) !important;
+}
+
+/* Dropdown options */
+select.form-control option {
+  background-color: #111 !important;
+  color: var(--cream) !important;
+}
+
+/* Selected option highlight */
+select.form-control option:checked {
+  background-color: var(--gold) !important;
+  color: #000 !important;
+}
+
+/* Disabled select */
+select.form-control:disabled {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #bbb !important;
+}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+  <div class="col-md-4 col-11">
+
+    <div class="card bg-dark border-warning p-4 hero-glow">
+
+      <h3 class="text-warning text-center mb-4 fw-bold">
+        Admin Login
+      </h3>
+
+      <form method="POST">
+
+        <label class="text-warning fw-semibold mb-1">Username</label>
+        <input class="form-control mb-3"
+               name="username"
+               placeholder="Admin username"
+               required>
+
+        <label class="text-warning fw-semibold mb-1">Password</label>
+        <input class="form-control mb-4"
+               name="password"
+               type="password"
+               placeholder="Admin password"
+               required>
+
+        <button class="btn btn-warning w-100 fw-bold">
+          Login
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
