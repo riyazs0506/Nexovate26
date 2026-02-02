@@ -1,3 +1,4 @@
-flask
-flask-mysqldb
-flask-mail
+Flask
+Flask-Mail
+PyMySQL
+gunicorn
